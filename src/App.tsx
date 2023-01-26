@@ -3,7 +3,10 @@ import './App.css'
 import axios from 'axios'
 
 
-
+interface Pokemon {
+  name: string;
+  url: string;
+}
 
 interface TCell {
   row: number
@@ -11,19 +14,32 @@ interface TCell {
 }
 
 function App() {
+
+
   const [pokemons, setPokemons] = useState([])
   useEffect(() => {
     getPokemons()
   }, []);
 
   const getPokemons = () => {
-    axios
-      .get("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    var endpoints = [];
+    for (var i = 1; i < 100; i++) {
+      endpoints.push(`http://pokeapi.co/api/v2/pokemon/${i}/`)
+    }
+    var response = axios.all(endpoints.map((endpoint) => axios.get(endpoint)));
+    return response;
+
+    console.log(response);
+    // axios
+    //   .get("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0")
+    //   .then((res) => setPokemons(res.data.results))
+    //   .catch((err) => console.log(err));
 
   }
 
+  // pokemons.map((pokemon: Pokemon) => {
+  //   console.log(pokemon.name);
+  // })
 
   const [grid, setGrid] = useState([
     [0, 1, 3, 3], //0
